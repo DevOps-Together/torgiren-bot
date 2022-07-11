@@ -12,7 +12,8 @@
       "program": "${workspaceFolder}/",
       "envFile": "${workspaceFolder}/.env_debug",
       "args": [
-        "-log-level=trace"
+        "-log-level=trace",
+        "-config-file=example/config.yaml"
       ]
     }
   ]

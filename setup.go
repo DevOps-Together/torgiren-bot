@@ -73,6 +73,27 @@ func setupAutorole(session *discordgo.Session, channels []*discordgo.Channel, gu
 		log.Infof("Message %s already pinned in channel %s in guild %s", message.ID, autorole.Channel, guildId)
 	}
 
+	//find role
+	role, err := FindRole(session, guildId, autorole.Role)
+	if err != nil {
+		log.Errorf("Couldn't find role %s for guild %s: %s", autorole.Role, guildId, err)
+		return err
+	} else if role == nil {
+		// create role
+		role, err := session.GuildRoleCreate(guildId)
+		if err != nil {
+			log.Errorf("Couldn't create role %s for guild %s: %s", autorole.Role, guildId, err)
+			return err
+		}
+		role, err = session.GuildRoleEdit(guildId, role.ID, autorole.Role, 0xFFFFFF, true, 0, false)
+		if err != nil {
+			log.Errorf("Couldn't edit role %s for guild %s: %s", autorole.Role, guildId, err)
+			return err
+		}
+		log.Infof("Role %s for guild %s created", autorole.Role, guildId)
+	} else {
+		log.Infof("Role %s for guild %s already exists", autorole.Role, guildId)
+	}
 	return nil
 }
 
