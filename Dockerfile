@@ -10,6 +10,8 @@ COPY * ./
 
 RUN go build -o /discord-bot .
 
+RUN go test ./...
+
 #########
 FROM gcr.io/distroless/base-debian11
 
