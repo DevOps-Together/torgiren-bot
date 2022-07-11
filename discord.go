@@ -40,3 +40,12 @@ func FindRole(session *discordgo.Session, guildId string, role string) (*discord
 	}
 	return nil, nil
 }
+
+func FindAutoroles(autoroles []*Autorole, channel *discordgo.Channel, message *discordgo.Message) *Autorole {
+	for i := range autoroles {
+		if channel.Name == autoroles[i].Channel && message.Content == autoroles[i].Message {
+			return autoroles[i]
+		}
+	}
+	return nil
+}
