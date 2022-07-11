@@ -1,4 +1,4 @@
-all: clean build test
+all: clean lint build test
 
 build: 
 	go build -o bin/discord-bot .
@@ -11,3 +11,6 @@ clean:
 
 dev:
 	bin/discord-bot -log-level=trace -config-file=example/config.yaml
+
+lint:
+	docker run --rm -v $(CURDIR):/app -w /app golangci/golangci-lint:v1.46.2 golangci-lint run -v

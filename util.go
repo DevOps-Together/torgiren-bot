@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 func PrettyPrint(data interface{}) (string, error) {
@@ -12,5 +11,5 @@ func PrettyPrint(data interface{}) (string, error) {
 
 		return "", err
 	}
-	return fmt.Sprintf("%s", p), nil
+	return string(p[:]), nil
 }

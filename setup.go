@@ -8,7 +8,7 @@ import (
 func guildSetup(session *discordgo.Session, guild *discordgo.Guild, config *Config) {
 	log.Info("Setting up guild: ", guild.ID)
 
-	var err error = nil
+	var err error
 
 	channels, err := session.GuildChannels(guild.ID)
 	if err != nil {
@@ -85,7 +85,7 @@ func setupAutorole(session *discordgo.Session, channels []*discordgo.Channel, gu
 			log.Errorf("Couldn't create role %s for guild %s: %s", autorole.Role, guildId, err)
 			return err
 		}
-		role, err = session.GuildRoleEdit(guildId, role.ID, autorole.Role, 0xFFFFFF, true, 0, false)
+		_, err = session.GuildRoleEdit(guildId, role.ID, autorole.Role, 0xFFFFFF, true, 0, false)
 		if err != nil {
 			log.Errorf("Couldn't edit role %s for guild %s: %s", autorole.Role, guildId, err)
 			return err
