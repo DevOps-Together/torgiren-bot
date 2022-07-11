@@ -1,0 +1,4 @@
+autoroles:
+- channel: "autorole-channel"
+  message: "Add reaction to this message to obtain role test-autorole. Remove your reaction to have test-autorole role removed."
+  role: test-autorole
