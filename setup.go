@@ -94,6 +94,23 @@ func setupAutorole(session *discordgo.Session, channels []*discordgo.Channel, gu
 	} else {
 		log.Infof("Role %s for guild %s already exists", autorole.Role, guildId)
 	}
+
+	foundReaction := false
+	for i := range message.Reactions {
+		if message.Reactions[i].Emoji.Name == autorole.Emoji {
+			log.Infof("Reaction emoji %s already exists for message %s in channel %s in guild %s already exists", autorole.Emoji, message.ID, channel.Name, guildId)
+			foundReaction = true
+			break
+		}
+	}
+	if !foundReaction {
+		err := session.MessageReactionAdd(message.ChannelID, message.ID, autorole.Emoji)
+		if err != nil {
+			log.Errorf("Reaction emoji %s creation failed for message %s in channel %s in guild %s already exists, %s", autorole.Emoji, message.ID, channel.Name, guildId, err)
+		} else {
+			log.Infof("Reaction emoji %s created successfully for message %s in channel %s in guild %s already exists", autorole.Emoji, message.ID, channel.Name, guildId)
+		}
+	}
 	return nil
 }
 

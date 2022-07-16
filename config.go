@@ -25,6 +25,7 @@ type Autorole struct {
 	Channel string `yaml:"channel"`
 	Message string `yaml:"message"`
 	Role    string `yaml:"role"`
+	Emoji   string `yaml:"emoji"`
 }
 
 func parseFlags() *Config {

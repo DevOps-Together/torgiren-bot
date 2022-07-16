@@ -14,6 +14,10 @@ func getGuildCreateHandler(config *Config) func(*discordgo.Session, *discordgo.G
 
 func getAddReactionHandler(config *Config) func(*discordgo.Session, *discordgo.MessageReactionAdd) {
 	return func(session *discordgo.Session, event *discordgo.MessageReactionAdd) {
+		if event.UserID == session.State.User.ID {
+			log.Debug("Reaction created by bot user")
+			return
+		}
 		log.Debugf("Got add reaction event for %s channel, %s guild, %s message", event.ChannelID, event.GuildID, event.MessageID)
 		channel, err := session.Channel(event.ChannelID)
 		if err != nil {
@@ -25,7 +29,7 @@ func getAddReactionHandler(config *Config) func(*discordgo.Session, *discordgo.M
 			log.Errorf("Error finding message %s: %s", event.MessageID, err)
 			return
 		}
-		autorole := FindAutoroles(config.botConfig.Autoroles, channel, message)
+		autorole := FindAutoroles(config.botConfig.Autoroles, channel, message, event.MessageReaction.Emoji.Name)
 		if autorole == nil {
 			log.Debugf("No autorole matches channel=%s, message=%s", event.ChannelID, event.MessageID)
 			return
@@ -47,6 +51,11 @@ func getAddReactionHandler(config *Config) func(*discordgo.Session, *discordgo.M
 
 func getRemoveReactionHandler(config *Config) func(*discordgo.Session, *discordgo.MessageReactionRemove) {
 	return func(session *discordgo.Session, event *discordgo.MessageReactionRemove) {
+		if event.UserID == session.State.User.ID {
+			log.Warn("Reaction deleted by bot user. Shouldn't occur.")
+			return
+		}
+
 		log.Debugf("Got remove reaction event for %s channel, %s guild, %s message", event.ChannelID, event.GuildID, event.MessageID)
 		channel, err := session.Channel(event.ChannelID)
 		if err != nil {
@@ -58,7 +67,7 @@ func getRemoveReactionHandler(config *Config) func(*discordgo.Session, *discordg
 			log.Errorf("Error finding message %s: %s", event.MessageID, err)
 			return
 		}
-		autorole := FindAutoroles(config.botConfig.Autoroles, channel, message)
+		autorole := FindAutoroles(config.botConfig.Autoroles, channel, message, event.MessageReaction.Emoji.Name)
 		if autorole == nil {
 			log.Debugf("No autorole matches channel=%s, message=%s", event.ChannelID, event.MessageID)
 			return
