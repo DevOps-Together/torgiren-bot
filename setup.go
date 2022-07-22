@@ -50,7 +50,7 @@ func setupAutorole(session *discordgo.Session, channels []*discordgo.Channel, gu
 	}
 	message := FindMessage(messages, autorole.Message)
 	if message == nil {
-		message, err = CreateMessage(session, channel, autorole.Message)
+		message, err = session.ChannelMessageSend(channel.ID, autorole.Message)
 		if err != nil {
 			log.Errorf("Error creating message in channel %s in guild %s: %s", autorole.Channel, guildId, err)
 			return err

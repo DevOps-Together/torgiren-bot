@@ -24,10 +24,6 @@ func FindMessage(messages []*discordgo.Message, needle string) *discordgo.Messag
 	return nil
 }
 
-func CreateMessage(session *discordgo.Session, channel *discordgo.Channel, message string) (*discordgo.Message, error) {
-	return session.ChannelMessageSend(channel.ID, message)
-}
-
 func FindRole(session *discordgo.Session, guildId string, role string) (*discordgo.Role, error) {
 	roles, err := session.GuildRoles(guildId)
 	if err != nil {
