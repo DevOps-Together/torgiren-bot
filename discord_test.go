@@ -46,7 +46,7 @@ func TestFindChannelNegtive(t *testing.T) {
 	assert.Equalf(t, expected, result, "Got %s expected %s", result, expected)
 }
 
-func TestFindMessage(t *testing.T) {
+func TestFindMessageInternal(t *testing.T) {
 	expected := &discordgo.Message{
 		ID:      "3",
 		Content: "test content",
@@ -66,12 +66,12 @@ func TestFindMessage(t *testing.T) {
 		},
 	}
 
-	result := FindMessage(messages, "test content")
+	result := findMessageInternal(messages, "test content")
 
 	assert.Equalf(t, expected, result, "Got %s expected %s", result, expected)
 }
 
-func TestFindMessageNegtive(t *testing.T) {
+func TestFindMessageInternalNegtive(t *testing.T) {
 	var expected *discordgo.Message = nil
 	messages := []*discordgo.Message{
 		{
@@ -84,7 +84,7 @@ func TestFindMessageNegtive(t *testing.T) {
 		},
 	}
 
-	result := FindMessage(messages, "three")
+	result := findMessageInternal(messages, "three")
 
 	assert.Equalf(t, expected, result, "Got %s expected %s", result, expected)
 }

@@ -1,6 +1,9 @@
 package main
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"github.com/bwmarrin/discordgo"
+	log "github.com/sirupsen/logrus"
+)
 
 func FindChannel(channels []*discordgo.Channel, channelName string) *discordgo.Channel {
 	for i := range channels {
@@ -15,7 +18,25 @@ func CreateChannel(session *discordgo.Session, guildId, channelName string) (*di
 	return session.GuildChannelCreate(guildId, channelName, discordgo.ChannelTypeGuildText)
 }
 
-func FindMessage(messages []*discordgo.Message, needle string) *discordgo.Message {
+func FindChannelMessage(session *discordgo.Session, channelID string, autorole *Autorole) (*discordgo.Message, error) {
+	limit := 100
+	messages, err := session.ChannelMessages(channelID, limit, "", "", "")
+	for len(messages) > 0 {
+		if err != nil {
+			log.Errorf("Error getting messages from channel %s: %s", autorole.Channel, err)
+			return nil, err
+		}
+		message := findMessageInternal(messages, autorole.Message)
+		if message != nil {
+			return message, nil
+		}
+		messages, err = session.ChannelMessages(channelID, limit, messages[len(messages)-1].ID, "", "")
+	}
+
+	return nil, nil
+}
+
+func findMessageInternal(messages []*discordgo.Message, needle string) *discordgo.Message {
 	for i := range messages {
 		if messages[i].Content == needle {
 			return messages[i]
