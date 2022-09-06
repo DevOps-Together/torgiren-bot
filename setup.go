@@ -10,13 +10,8 @@ func guildSetup(session *discordgo.Session, guild *discordgo.Guild, config *Conf
 
 	var err error
 
-	channels, err := session.GuildChannels(guild.ID)
-	if err != nil {
-		log.Errorf("Guild %s set up failed. Can't get guild channels: ", err)
-		return
-	}
 	for i := range config.botConfig.Autoroles {
-		err = setupAutorole(session, channels, guild.ID, config.botConfig.Autoroles[i])
+		err = setupAutorole(session, guild.ID, config.botConfig.Autoroles[i])
 	}
 
 	if err == nil {
@@ -26,11 +21,15 @@ func guildSetup(session *discordgo.Session, guild *discordgo.Guild, config *Conf
 	}
 }
 
-func setupAutorole(session *discordgo.Session, channels []*discordgo.Channel, guildId string, autorole *Autorole) error {
+func setupAutorole(session *discordgo.Session, guildId string, autorole *Autorole) error {
+	channels, err := session.GuildChannels(guildId)
+	if err != nil {
+		return err
+	}
 	// find or crete channel
 	channel := FindChannel(channels, autorole.Channel)
 	if channel == nil {
-		channel, err := CreateChannel(session, guildId, autorole.Channel)
+		channel, err = CreateChannel(session, guildId, autorole.Channel)
 		if err != nil {
 			log.Errorf("Error creating channel %s in guild %s: %s", autorole.Channel, guildId, err)
 			return err
