@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - name: dump key
-      run: echo ${{ secrets.SSH_KEY }} > /tmp/aa.key
+      run: echo "${{ secrets.SSH_KEY }}" > /tmp/aa.key
     - name: chmod
       run: chmod 400 /tmp/aa.key
     - name: update version
