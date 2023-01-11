@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -39,7 +38,7 @@ func parseFlags() *Config {
 }
 
 func loadConfigFile(config *Config) error {
-	buf, err := ioutil.ReadFile(config.configFile)
+	buf, err := os.ReadFile(config.configFile)
 	if err != nil {
 		return err
 	}
