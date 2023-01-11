@@ -9,4 +9,4 @@ jobs:
 
     steps:
     - name: update version
-      run: ssh ${{ secret.MIKRUS_CONNECTION_STRING }} -i <(echo ${{ secret.SSH_KEY }}) sh -c "echo TAG=${{ github.ref_name }) > role_bot.env; sudo systemctl restart bot"
+      run: ssh ${{ secrets.MIKRUS_CONNECTION_STRING }} -i <(echo ${{ secrets.SSH_KEY }}) sh -c "echo TAG=${{ github.ref_name }) > role_bot.env; sudo systemctl restart bot"
