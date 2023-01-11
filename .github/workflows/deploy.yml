@@ -1,0 +1,12 @@
+name: deploy bot
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: update version
+      run: ssh ${[ secret.MIKRUS_CONNECTION_STRING }} -i <(echo ${{ secret.SSH_KEY }} sh -c "echo TAG=${{ github.ref_name }) > role_bot.env; sudo systemctl restart bot"
