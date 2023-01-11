@@ -8,5 +8,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: dump key
+      run: echo ${{ secrets.SSH_KEY }} > /tmp/aa.key
+    - name: chmod
+      run: chmod 400 /tmp/aa.key
     - name: update version
-      run: ssh ${{ secrets.MIKRUS_CONNECTION_STRING }} -i <(echo ${{ secrets.SSH_KEY }}) sh -c "echo TAG=${{ github.ref_name }} > role_bot.env; sudo systemctl restart bot"
+      run: ssh ${{ secrets.MIKRUS_CONNECTION_STRING }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /tmp/aa.key sh -c "echo TAG=${{ github.ref_name }} > role_bot.env; sudo systemctl restart bot"
