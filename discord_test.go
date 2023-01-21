@@ -1,6 +1,7 @@
 package main
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/bwmarrin/discordgo"
@@ -66,7 +67,7 @@ func TestFindMessageInternal(t *testing.T) {
 		},
 	}
 
-	result := findMessageInternal(messages, "test content")
+	result := findMessageInternal(messages, nil, "test content")
 
 	assert.Equalf(t, expected, result, "Got %s expected %s", result, expected)
 }
@@ -84,9 +85,31 @@ func TestFindMessageInternalNegtive(t *testing.T) {
 		},
 	}
 
-	result := findMessageInternal(messages, "three")
+	result := findMessageInternal(messages, nil, "three")
 
 	assert.Equalf(t, expected, result, "Got %s expected %s", result, expected)
+}
+
+func TestFindMessageInternalRegexp(t *testing.T) {
+
+	messages := []*discordgo.Message{
+		{
+			ID:      "1",
+			Content: "one",
+		},
+		{
+			ID:      "2",
+			Content: "two secret words",
+		},
+	}
+	var expected *discordgo.Message = messages[1]
+	regexpNeedle := regexp.MustCompile(".*secret.*")
+
+	result := findMessageInternal(messages, regexpNeedle, "three")
+
+	assert.NotNil(t, result)
+	assert.Equal(t, "2", result.ID)
+	assert.Equal(t, expected, result)
 }
 
 func TestFindAutoroles(t *testing.T) {
