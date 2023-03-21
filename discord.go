@@ -1,6 +1,8 @@
 package main
 
 import (
+	"regexp"
+
 	"github.com/bwmarrin/discordgo"
 	log "github.com/sirupsen/logrus"
 )
@@ -20,13 +22,17 @@ func CreateChannel(session *discordgo.Session, guildId, channelName string) (*di
 
 func FindChannelMessage(session *discordgo.Session, channelID string, autorole *Autorole) (*discordgo.Message, error) {
 	limit := 100
+	var regexpNeedle *regexp.Regexp = nil
+	if autorole.Regexp != "" {
+		regexpNeedle = regexp.MustCompile(autorole.Regexp)
+	}
 	messages, err := session.ChannelMessages(channelID, limit, "", "", "")
 	for len(messages) > 0 {
 		if err != nil {
 			log.Errorf("Error getting messages from channel %s: %s", autorole.Channel, err)
 			return nil, err
 		}
-		message := findMessageInternal(messages, autorole.Message)
+		message := findMessageInternal(messages, regexpNeedle, autorole.Message)
 		if message != nil {
 			return message, nil
 		}
@@ -36,10 +42,17 @@ func FindChannelMessage(session *discordgo.Session, channelID string, autorole *
 	return nil, nil
 }
 
-func findMessageInternal(messages []*discordgo.Message, needle string) *discordgo.Message {
+func findMessageInternal(messages []*discordgo.Message, regexpNeedle *regexp.Regexp, needle string) *discordgo.Message {
+
 	for i := range messages {
-		if messages[i].Content == needle {
-			return messages[i]
+		if regexpNeedle != nil {
+			if regexpNeedle.MatchString(messages[i].Content) {
+				return messages[i]
+			}
+		} else {
+			if messages[i].Content == needle {
+				return messages[i]
+			}
 		}
 	}
 	return nil

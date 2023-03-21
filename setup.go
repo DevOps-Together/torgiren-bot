@@ -58,6 +58,14 @@ func setupAutorole(session *discordgo.Session, guildId string, autorole *Autorol
 		}
 	} else {
 		log.Infof("Message %s found in channel %s in guild %s", message.ID, channel.Name, guildId)
+		if message.Content != autorole.Message {
+			log.Infof("Message content different - needs update.")
+			message, err = session.ChannelMessageEdit(channel.ID, message.ID, autorole.Message)
+			if err != nil {
+				log.Errorf("Error updating message %s in channel %s in guild %s: %s", message.ID, autorole.Channel, guildId, err)
+				return err
+			}
+		}
 	}
 
 	if !message.Pinned {

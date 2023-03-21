@@ -7,3 +7,8 @@ autoroles:
   message: "Add 👍 reaction to this message to obtain role test-autorole. Add 🍺 reaction to obtain test-autorole-beer role. Remove your reaction to have role removed."
   role: test-autorole-beer
   emoji: 🍺
+- channel: "autorole-channel"
+  message: "Add 🔥 reaction to this message to obtain role test-autorole-fire. New content"
+  role: test-autorole-fire
+  regexp: "^Add 🔥 reaction.*"
+  emoji: 🔥

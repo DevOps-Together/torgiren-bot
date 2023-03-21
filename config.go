@@ -25,6 +25,7 @@ type Autorole struct {
 	Message string `yaml:"message"`
 	Role    string `yaml:"role"`
 	Emoji   string `yaml:"emoji"`
+	Regexp  string `yaml:"regexp,omitempty"`
 }
 
 func parseFlags() *Config {
